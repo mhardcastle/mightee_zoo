@@ -34,7 +34,7 @@ def getname(srcra,srcdec):
     
     sc=SkyCoord(srcra,srcdec,unit='deg',frame='icrs')
     s=sc.to_string(style='hmsdms',sep='',precision=2)
-    ilt=str('ILTJ'+s).replace(' ','')[:-1]
+    ilt=str('MGTC'+s).replace(' ','')[:-1]
     return ilt
         
 
@@ -238,8 +238,18 @@ problems = pd.read_csv(probfile)
 #sourcecat = "/data/lofar/mjh/dr2/0h/lotss_dr2_ra0inner_masked_v0.9.srl.fits"
 #sourcecat='/data/lofar/DR2/catalogues/LoTSS_DR2_v100.srl.fits'
 #optcat='/beegfs/lofar/mjh/dr2/dr2_combined.fits' #  % (field_l,field_h)
-sourcecat='../cosmos_new/Flowchart_sources_COSMOS-HighRes-DoubleDetect-2023-05-04_fixed.fits'
-optcat='/beegfs/general/halec001/MIGHTEE/Catalogues/Ks-band/COSMOS/COSMOSFULL_DR3_UNMASKED_Ks_2023_03_11_2.0as_IRAC_2.8as_ALL_CH_prefilter.fits'
+
+wd=os.getcwd()
+
+if 'cosmos' in wd:
+    sourcecat='../cosmos_new/Flowchart_sources_COSMOS-HighRes-DoubleDetect-2023-05-04_fixed.fits'
+    optcat='/beegfs/general/halec001/MIGHTEE/Catalogues/Ks-band/COSMOS/COSMOSFULL_DR3_UNMASKED_Ks_2023_03_11_2.0as_IRAC_2.8as_ALL_CH_prefilter.fits'
+elif 'cdfs' in wd:
+    sourcecat='../cdfs/Flowchart_sources_CDFS-DEEP-HighRes-DoubleDetect-2023-05-04_fixed.fits'
+    optcat='/beegfs/general/halec001/MIGHTEE/Catalogues/Ks-band/CDFS/CDFSFULL_DR3_UNMASKED_Ks_2022_11_30_2.0as_IRAC_2.8as_ALL_CH_prefilter.fits'
+elif 'xmm' in wd:
+    sourcecat='../xmm-lss/Flowchart_sources_XMMLSS-HighRes-DoubleDetect-2023-05-04_fixed.fits'
+    optcat='/beegfs/general/halec001/MIGHTEE/Catalogues/Ks-band/XMM-LSS/XMMFULL_DR3_UNMASKED_Ks_2022_11_11_2.0as_IRAC_2.8as_ALL_CH_prefilter.fits'
 opt=Table.read(optcat)
 idname='ID'
 #opt['ID']=np.where(opt['UNWISE_OBJID']!="N/A",opt['UNWISE_OBJID'],opt['UID_L'])
@@ -634,7 +644,7 @@ for finalset in allgoodsets:
     zpb=0
     hpb=0
     imb=0
-    if setsubjs>0:
+    if len(setsubjs)>0:
         
         for fsubj in setsubjs:
                             
@@ -775,7 +785,8 @@ for subj in new_subs_unique:
         optdec=np.nan
         qual=np.nan
     else:
-        findilist=filter(lambda x: x['Source_Name'] == subj, ilist)
+        findilist=[x for x in ilist if x['Source_Name']==subj]
+                   #filter(lambda x: x['Source_Name'] == subj, ilist)
 
         if len(findilist)==0:
             optid="None"

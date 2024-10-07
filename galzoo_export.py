@@ -24,8 +24,9 @@ from collections import defaultdict
 
 def flatten_subject_info(subject_data):
 
-  result = subject_data.values()[0]
-  result.update({'id': subject_data.keys()[0]})
+  #print(subject_data)
+  result = list(subject_data.values())[0]
+  result.update({'id': list(subject_data.keys())[0]})
   return result
 
 try:
@@ -94,6 +95,12 @@ nlist=[]
 subjdict=defaultdict(list)
 
 for index,c in iclass.iterrows():
+
+    subj=c.subject_data['source_name']
+    user=c.user_name
+    ra=c.subject_data['ra']
+    dec=c.subject_data['dec']
+    size=c.subject_data['#size']
 
     lusers=subjdict.get(subj,[])
     if user in lusers:
